@@ -1,13 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
-    <script type="text/babel" >
-        "use strict";
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://npmcdn.com/babel-core@5.8.38/browser.min.js"></script>
+  <script type="text/babel" >
+    "use strict";
+    let socket;
+    let myNum = 0;
+
+    const init = () => {
+      socket =io.connect();
+      
+      socket.on('connect', ()=>{
+        console.log('connected to server');
+        
+        setupSocket();
+        
+        setInterval(updateServer, 1000);
+      });
+    };
+
+    const setupSocket = () => {
+      socket.on('updateClient', (data) =>{
+        console.log(data);
+        myNum = data.newNum;
+        
+        document.querySelector("#myPara").innerHTML = myNum;
+      });
+      
+    }
     
-    </script>
+    const updateServer = () =>{
+      socket.emit('updateServer', {});
+    }
+    
+    window.onload = init;
+  </script>
 </head>
 <body>
 
+  <h1>
+    Total Score:
+  </h1>
+  <p id="myPara">
+  </p>
 </body>
 </html>
